@@ -16,8 +16,8 @@ import com.phonegap.sdk.projects.PhoneGapProject;
 
 public class NewPhoneGapProjectWizard extends Wizard implements INewWizard, IExecutableExtension {
 	
-	private WizardNewProjectCreationPage _pageOne;
-	private IConfigurationElement _configurationElement;
+	private WizardNewProjectCreationPage detailsPage;
+	private IConfigurationElement config;
 
 
 	public NewPhoneGapProjectWizard() {
@@ -34,23 +34,23 @@ public class NewPhoneGapProjectWizard extends Wizard implements INewWizard, IExe
 	public void addPages() {
 		super.addPages();
 		
-		_pageOne = new WizardNewProjectCreationPage("PhoneGap Project Details");
-		_pageOne.setTitle("PhoneGap Project Details");
-		_pageOne.setDescription("Define the properties of your PhoneGap project here.");
-		addPage(_pageOne);
+		detailsPage = new WizardNewProjectCreationPage("PhoneGap Project Details");
+		detailsPage.setTitle("PhoneGap Project Details");
+		detailsPage.setDescription("Define the properties of your PhoneGap project here.");
+		addPage(detailsPage);
 	}
 
 	@Override
 	public boolean performFinish() {
 		
 		URI location = null;
-		if (!_pageOne.useDefaults()) {
-			location = _pageOne.getLocationURI();
+		if (!detailsPage.useDefaults()) {
+			location = detailsPage.getLocationURI();
 		}
 		
-		PhoneGapProject.createProject(_pageOne.getProjectName(), location);
+		PhoneGapProject.createProject(detailsPage.getProjectName(), location);
 		
-		BasicNewProjectResourceWizard.updatePerspective(_configurationElement);
+		BasicNewProjectResourceWizard.updatePerspective(config);
 
 		
 		return true;
@@ -59,8 +59,7 @@ public class NewPhoneGapProjectWizard extends Wizard implements INewWizard, IExe
 	@Override
 	public void setInitializationData(IConfigurationElement config,
 			String propertyName, Object data) throws CoreException {
-		// TODO Auto-generated method stub
-		_configurationElement = config;
+		this.config = config;
 	}
 
 }

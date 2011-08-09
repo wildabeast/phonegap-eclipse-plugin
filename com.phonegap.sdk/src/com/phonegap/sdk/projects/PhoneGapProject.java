@@ -16,14 +16,18 @@ import com.phonegap.sdk.Util;
 import com.phonegap.sdk.natures.PhoneGapProjectNature;
 
 public class PhoneGapProject {
+	
+	public static final String PLUGIN_ID = "com.phonegap.sdk";
+	private static final String TEMPLATE_BASIC = "templates/basic";
 
 	public static IProject createProject(String name, URI location) {
 		Assert.isNotNull(name);
+		Assert.isTrue(name.trim().length() > 0);
 		
 		IProject project = createEclipseProject(name, location);
 		try {
 			addNature(project);
-			createProjectFiles(project);
+			loadTemplate(project);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -56,11 +60,11 @@ public class PhoneGapProject {
 		return newProj;
 	}
 	
-	private static void createProjectFiles(IProject project) throws CoreException {
+	private static void loadTemplate(IProject project) throws CoreException {
 
 		File projDir = new File(project.getLocationURI().getPath());
 		try {
-			File template = new File(FileLocator.toFileURL(Platform.getBundle("com.phonegap.sdk").getEntry("templates/basic")).getFile());
+			File template = new File(FileLocator.toFileURL(Platform.getBundle(PLUGIN_ID).getEntry(TEMPLATE_BASIC)).getFile());
 			Util.copyDirectory(template, projDir);
 			project.refreshLocal(IProject.DEPTH_INFINITE, null);
 		} catch (IOException e) {

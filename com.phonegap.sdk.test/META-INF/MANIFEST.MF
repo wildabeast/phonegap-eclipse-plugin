@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PhoneGap Test
+Bundle-SymbolicName: com.phonegap.sdk.test;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.phonegap.sdk.test.Activator
+Bundle-Vendor: PHONEGAP
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/dom4j-1.6.1.jar,
+ .,
+ lib/jaxen-1.1-beta-6.jar
+Import-Package: com.phonegap.sdk.natures,
+ com.phonegap.sdk.projects,
+ org.eclipse.core.resources,
+ org.junit;version="4.8.2"
