@@ -20,7 +20,7 @@
          point="org.eclipse.ui.views">
       <view
             category="com.phonegap.sdk.navigator.category"
-            class="com.phonegap.sdk.navigator.PhoneGapNavigator"
+            class="org.eclipse.ui.navigator.CommonNavigator"
             icon="icons/phonegap16.png"
             id="com.phonegap.sdk.navigator"
             name="PhoneGap Navigator">
@@ -32,19 +32,17 @@
    </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
-      <viewerActionBinding
-            viewerId="com.phonegap.sdk.navigator">
-         <includes>
-            <actionExtension
-                  pattern="org.eclipse.ui.navigator.resources.*">
-            </actionExtension>
-         </includes>
-      </viewerActionBinding>
       <viewerContentBinding
             viewerId="com.phonegap.sdk.navigator">
          <includes>
             <contentExtension
-                  pattern="com.phonegap.sdk.navigator.content">
+                  pattern="org.eclipse.ui.navigator.resourceContent">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.filters.*">
+            </contentExtension>
+            <contentExtension
+                  pattern="com.phonegap.sdk.navigator.filter">
             </contentExtension>
          </includes>
       </viewerContentBinding>
@@ -107,19 +105,20 @@
    </extension>
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
-            contentProvider="com.phonegap.sdk.navigator.ContentProvider"
-            id="com.phonegap.sdk.navigator.content"
-            labelProvider="com.phonegap.sdk.navigator.LabelProvider"
-            name="PhoneGap Navigator Content">
-         <triggerPoints>
-            <or>
-               <instanceof
-                     value="com.phonegap.sdk.navigator.PhoneGapProjectWorkbenchRoot">
-               </instanceof>
-            </or>
-         </triggerPoints>
-      </navigatorContent>
+      <commonFilter
+            activeByDefault="true"
+            description="Filters PhoneGap projects only"
+            id="com.phonegap.sdk.navigator.filter"
+            name="PhoneGap Navigator Filter">
+         <filterExpression>
+            <not>
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="com.phonegap.sdk.projectNature">
+               </test>
+            </not>
+         </filterExpression>
+      </commonFilter>
    </extension>
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
