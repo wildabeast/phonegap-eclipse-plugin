@@ -46,6 +46,14 @@
             </contentExtension>
          </includes>
       </viewerContentBinding>
+      <viewerActionBinding
+            viewerId="com.phonegap.sdk.navigator">
+         <includes>
+            <actionExtension
+                  pattern="org.eclipse.ui.navigator.resources.*">
+            </actionExtension>
+         </includes>
+      </viewerActionBinding>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -119,6 +127,11 @@
             </not>
          </filterExpression>
       </commonFilter>
+      <commonWizard
+            type="new"
+            wizardId="com.phonegap.sdk.wizard.new">
+         <enablement></enablement>
+      </commonWizard>
    </extension>
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
