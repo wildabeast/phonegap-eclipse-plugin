@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+
 public class Util {
 	public static void copyDirectory(File srcPath, File dstPath) throws IOException{
 		if (srcPath.isDirectory())
@@ -44,6 +47,10 @@ public class Util {
 			}
 		}
 		System.out.println("Directory copied.");
+	}
+	
+	public static Image getImage(String path) {
+		return AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, path).createImage();
 	}
 	
 }

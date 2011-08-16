@@ -19,11 +19,16 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="org.eclipse.ui.navigator.CommonNavigator"
+            category="com.phonegap.sdk.navigator.category"
+            class="com.phonegap.sdk.navigator.PhoneGapNavigator"
             icon="icons/phonegap16.png"
             id="com.phonegap.sdk.navigator"
             name="PhoneGap Navigator">
       </view>
+      <category
+            id="com.phonegap.sdk.navigator.category"
+            name="PhoneGap Projects">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
@@ -39,16 +44,7 @@
             viewerId="com.phonegap.sdk.navigator">
          <includes>
             <contentExtension
-                  pattern="org.eclipse.ui.navigator.resourceContent">
-            </contentExtension>
-            <contentExtension
-                  pattern="org.eclipse.ui.navigator.resources.filters.*">
-            </contentExtension>
-            <contentExtension
-                  pattern="org.eclipse.ui.navigator.resources.linkHelper">
-            </contentExtension>
-            <contentExtension
-                  pattern="org.eclipse.ui.navigator.resources.workingSets">
+                  pattern="com.phonegap.sdk.navigator.content">
             </contentExtension>
          </includes>
       </viewerContentBinding>
@@ -108,6 +104,30 @@
             </command>
          </toolbar>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            contentProvider="com.phonegap.sdk.navigator.ContentProvider"
+            id="com.phonegap.sdk.navigator.content"
+            labelProvider="com.phonegap.sdk.navigator.LabelProvider"
+            name="PhoneGap Navigator Content">
+         <triggerPoints>
+            <or>
+               <instanceof
+                     value="com.phonegap.sdk.navigator.PhoneGapProjectWorkbenchRoot">
+               </instanceof>
+            </or>
+         </triggerPoints>
+      </navigatorContent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/phonegap_overlay.png"
+            id="com.phonegap.sdk.natureImage"
+            natureId="com.phonegap.sdk.projectNature">
+      </image>
    </extension>
 
 </plugin>
