@@ -141,5 +141,23 @@
             natureId="com.phonegap.sdk.projectNature">
       </image>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="com.phonegap.sdk"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="com.phonegap.sdk.actions.PhoneGapBuildAction"
+               icon="icons/buildbot_menu_icon.ico"
+               id="com.phonegap.sdk.actions.build"
+               label="Build">
+         </action>
+         <filter
+               name="projectNature"
+               value="com.phonegap.sdk.projectNature">
+         </filter>
+      </objectContribution>
+   </extension>
 
 </plugin>

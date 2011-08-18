@@ -12,6 +12,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 
+import com.phonegap.sdk.Activator;
 import com.phonegap.sdk.projects.PhoneGapProject;
 
 public class NewPhoneGapProjectWizard extends Wizard implements INewWizard, IExecutableExtension {
@@ -22,6 +23,7 @@ public class NewPhoneGapProjectWizard extends Wizard implements INewWizard, IExe
 
 	public NewPhoneGapProjectWizard() {
 		setWindowTitle("New PhoneGap Project");
+        setDefaultPageImageDescriptor(Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/phonegap_wizard_banner.jpg"));
 	}
 
 	@Override
