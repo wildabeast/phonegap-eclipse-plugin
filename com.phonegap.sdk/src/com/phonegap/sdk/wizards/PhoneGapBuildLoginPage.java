@@ -1,19 +1,32 @@
 package com.phonegap.sdk.wizards;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
-public class PhoneGapBuildLoginPage extends WizardPage {
+import com.phonegap.sdk.PhoneGapBuildController;
 
-	protected PhoneGapBuildLoginPage(String pageName) {
+
+public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
+	
+	private Text emailField;
+	private Text passwordField;
+	private Button testConnButton;
+	PhoneGapBuildController buildController;
+
+	protected PhoneGapBuildLoginPage(String pageName, String projName, PhoneGapBuildController buildController) {
 		super(pageName);
-		setTitle("PhoneGap Build Authentication");
+		setTitle("Build Project: " + projName);
 		setDescription("Authenticate yo' self.");
+		this.buildController = buildController;
 	}
 	
 	@Override
@@ -30,21 +43,70 @@ public class PhoneGapBuildLoginPage extends WizardPage {
 	    GridData textGrid = new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1);
 	    textGrid.widthHint = 200;
 
-	    Label usernameLabel = new Label(composite, SWT.RIGHT);
-	    usernameLabel.setText("Email: ");
-	    usernameLabel.setLayoutData(labelGrid);
+	    Label emailLabel = new Label(composite, SWT.RIGHT);
+	    emailLabel.setText("Email: ");
+	    emailLabel.setLayoutData(labelGrid);
 
-	    Text usernameField = new Text(composite, SWT.SINGLE | SWT.BORDER);
-	    usernameField.setLayoutData(textGrid);
+	    emailField = new Text(composite, SWT.SINGLE | SWT.BORDER);
+	    emailField.setLayoutData(textGrid);
+	    emailField.addListener(SWT.CHANGED, this);
 
 	    Label passwordLabel = new Label(composite, SWT.RIGHT);
 	    passwordLabel.setText("Password: ");
 	    passwordLabel.setLayoutData(labelGrid);
 
-	    Text passwordField = new Text(composite, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER);
+	    passwordField = new Text(composite, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER);
 	    passwordField.setLayoutData(textGrid);
-		
+	    passwordField.addListener(SWT.CHANGED, this);
+	    
+	    testConnButton = new Button(composite, SWT.CENTER);
+	    testConnButton.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, true, false , 2, 1));
+	    testConnButton.setText("Test Connection");
+	    testConnButton.addListener(SWT.Selection, this);
+
 		setControl(composite);
+		setPageComplete(false);
 	}
 
+	@Override
+	public void handleEvent(Event event) {
+		if (event.widget.equals(emailField) || event.widget.equals(passwordField)) {
+			if (!validateEmail(emailField.getText())) {
+				setErrorMessage("Invalid email");
+				setPageComplete(false);
+			} else if (passwordField.getText().equals("")) {
+				setErrorMessage("Enter a password");
+				setPageComplete(false);
+			} else {
+				setErrorMessage(null);
+				setPageComplete(true);
+			}
+			//Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, event.toString()));
+		} else if (event.widget.equals(testConnButton)) {
+			buildController.authenticate(getContainer(), emailField.getText(), passwordField.getText());
+			//testProg();
+		}
+		
+	}
+	
+	private static boolean validateEmail(String email){
+		Boolean isValid = false;
+		String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";  
+		CharSequence inputStr = email;  
+		//Make the comparison case-insensitive.  
+		Pattern pattern = Pattern.compile(expression,Pattern.CASE_INSENSITIVE);  
+		Matcher matcher = pattern.matcher(inputStr);  
+		if(matcher.matches()){  
+			isValid = true;  
+		}  
+		return isValid;  
+	}
+	
+	public String getEmail() {
+		return this.emailField.getText();
+	}
+	
+	public String getPassword() {
+		return this.passwordField.getText();
+	}
 }
