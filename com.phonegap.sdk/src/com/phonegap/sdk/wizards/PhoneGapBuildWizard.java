@@ -22,12 +22,12 @@ public class PhoneGapBuildWizard extends Wizard {
     }
     
 	public void addPages() {
-		buildController = new PhoneGapBuildController(_project);
+		buildController = new PhoneGapBuildController();
 		
-        _loginPage = new PhoneGapBuildLoginPage("loginPage", _project.getName(), buildController);
+        _loginPage = new PhoneGapBuildLoginPage("loginPage", buildController, _project.getName());
         addPage(_loginPage);
         
-        _summaryPage = new PhoneGapBuildSummaryPage("PhoneGap Build Summary", buildController);
+        _summaryPage = new PhoneGapBuildSummaryPage("PhoneGap Build Summary", buildController, _project);
         addPage(_summaryPage);
 	}
 	

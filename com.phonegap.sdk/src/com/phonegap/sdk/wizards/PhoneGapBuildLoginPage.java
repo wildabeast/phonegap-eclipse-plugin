@@ -20,9 +20,10 @@ public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
 	private Text emailField;
 	private Text passwordField;
 	private Button testConnButton;
-	PhoneGapBuildController buildController;
+	private PhoneGapBuildController buildController;
+	private static String emailPattern = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
 
-	protected PhoneGapBuildLoginPage(String pageName, String projName, PhoneGapBuildController buildController) {
+	protected PhoneGapBuildLoginPage(String pageName, PhoneGapBuildController buildController, String projName) {
 		super(pageName);
 		setTitle("Build Project: " + projName);
 		setDescription("Authenticate yo' self.");
@@ -81,20 +82,35 @@ public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
 				setErrorMessage(null);
 				setPageComplete(true);
 			}
-			//Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, event.toString()));
 		} else if (event.widget.equals(testConnButton)) {
-			buildController.authenticate(getContainer(), emailField.getText(), passwordField.getText());
-			//testProg();
+			testConnection();
 		}
 		
 	}
 	
+	private void testConnection() {
+		try {
+			final String email = emailField.getText();
+			final String password = passwordField.getText();
+			getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
+		      public void run(IProgressMonitor monitor) {
+	    		  monitor.beginTask("Authenticating: ", IProgressMonitor.UNKNOWN);
+		    	  buildController.authenticate(email, password);
+		    	  monitor.done();
+		      }
+			});
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static boolean validateEmail(String email){
 		Boolean isValid = false;
-		String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";  
 		CharSequence inputStr = email;  
-		//Make the comparison case-insensitive.  
-		Pattern pattern = Pattern.compile(expression,Pattern.CASE_INSENSITIVE);  
+		
+		Pattern pattern = Pattern.compile(emailPattern, Pattern.CASE_INSENSITIVE);  
 		Matcher matcher = pattern.matcher(inputStr);  
 		if(matcher.matches()){  
 			isValid = true;  

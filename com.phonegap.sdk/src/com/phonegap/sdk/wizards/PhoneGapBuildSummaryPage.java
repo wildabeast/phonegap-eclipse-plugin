@@ -1,5 +1,12 @@
 package com.phonegap.sdk.wizards;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -9,7 +16,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import com.phonegap.sdk.Activator;
 import com.phonegap.sdk.PhoneGapBuildController;
+import com.phonegap.sdk.Util;
 
 public class PhoneGapBuildSummaryPage extends WizardPage implements Listener {
 	
@@ -17,12 +26,15 @@ public class PhoneGapBuildSummaryPage extends WizardPage implements Listener {
 	private String _password;
 	private Button buildButton;
 	private PhoneGapBuildController buildController;
+	final IProject _project;
+	final static String[] ignoreList = { ".project" };
 	
-	protected PhoneGapBuildSummaryPage(String pageName, PhoneGapBuildController buildController) {
+	protected PhoneGapBuildSummaryPage(String pageName, PhoneGapBuildController buildController, IProject project) {
 		super(pageName);
 		setTitle("PhoneGap Build Summary");
 		setDescription("Build completed, here's yo apps");
 		this.buildController = buildController;
+		this._project = project;
 	}
 	
 	private void getLoginFields() {
@@ -58,7 +70,29 @@ public class PhoneGapBuildSummaryPage extends WizardPage implements Listener {
 		// TODO Auto-generated method stub
 		if (event.widget.equals(buildButton)) {
 			getLoginFields();
-			buildController.build(getContainer(), _email, _password);
+			try {
+				getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
+				      public void run(IProgressMonitor monitor) {
+				    	  monitor.beginTask("Packaging", IProgressMonitor.UNKNOWN);
+				    	  IPath dest = Activator.getDefault().getStateLocation();
+				    	  File destFile = dest.append("phonegap.build").addFileExtension("zip").toFile();
+				    	  
+				    	  File srcDir = _project.getLocation().toFile();
+				          Util.zipDirectory(srcDir, destFile, ignoreList);
+				    	  buildController.build(_project.getName(), _email, _password, destFile);
+				    	  if (destFile.exists()) {
+				        	  destFile.delete();
+				          }
+				          monitor.done();
+				      }
+				});
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}
