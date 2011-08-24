@@ -48,7 +48,9 @@ public class PhoneGapBuildController {
 	           read=br.readLine();
 	      }
 		  
-	  } catch (Exception e) {
+	  } catch (MalformedURLException e) {
+		  e.printStackTrace();
+	  } catch (IOException e) {
 		  e.printStackTrace();
 	  }
 
@@ -56,17 +58,14 @@ public class PhoneGapBuildController {
 	}
 	
 	public boolean build(final String username, final String password, String appName, File appPackage) {
-		// zip project to a temp directory
-	  
+		
 	  try {
           
           String auth = new String(Base64.encodeBase64((username + ":" + password).getBytes()));
 		  System.out.println(auth);
 		  
-		  URL url;
-		  URLConnection conn;
-		  url = new URL(buildUrl);
-		  conn = url.openConnection();
+		  URL url = new URL(buildUrl);
+		  URLConnection conn = url.openConnection();
 		  
 		  // this fails -- can't stop the auth window.
 		  conn.setAllowUserInteraction(false);
@@ -74,16 +73,34 @@ public class PhoneGapBuildController {
 		  String boundary = Long.toHexString(System.currentTimeMillis());
 		  conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 		  conn.setDoOutput(true);
+		  
+		  System.out.println("\r\n***************************************\r\n");
           
 		  BufferedOutputStream bos = new BufferedOutputStream( conn.getOutputStream() );
 		  BufferedInputStream bis = new BufferedInputStream( new FileInputStream( appPackage ) );
-		  bos.write(("data={'title':'" + appName + "'}\r\n").getBytes());
+		  String dataParam = "--" + boundary + "\r\n";
+		  dataParam += "Content-Disposition: form-data; name=\"data\"\r\n";
+		  dataParam += "{\"title\":\"" + appName + "\"}\r\n\r\n";
+		  System.out.println(dataParam);
+		  bos.write(dataParam.getBytes());
+		  
+		  String fileParam = "--" + boundary + "\r\n";
+		  fileParam += "Content-Disposition: form-data; name=\"file\"; filename=\"" + appPackage.getName() + "\"\r\n";
+		  fileParam += "Content-Type: application/octet-stream\r\n";
+		  fileParam += "Content-Transfer-Encoding: binary\r\n";
+		  System.out.println(fileParam);
+		  
+		  bos.write(fileParam.getBytes());
 		  
 		  int i;
           while ((i = bis.read()) != -1)
           {
              bos.write( i );
           }
+
+          System.out.println("--" + boundary + "--\r\n");
+          System.out.println("\r\n***************************************\r\n");
+          bos.write(("--" + boundary + "--\r\n").getBytes());
           bos.flush();
           
           InputStream in;
@@ -109,6 +126,7 @@ public class PhoneGapBuildController {
 	  } catch (IOException e) {
 		  e.printStackTrace();
 	  }
+	  
 		
 	  return false;
 	}

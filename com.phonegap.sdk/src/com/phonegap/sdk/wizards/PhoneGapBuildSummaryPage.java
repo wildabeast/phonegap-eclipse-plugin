@@ -79,7 +79,7 @@ public class PhoneGapBuildSummaryPage extends WizardPage implements Listener {
 				    	  
 				    	  File srcDir = _project.getLocation().toFile();
 				          Util.zipDirectory(srcDir, destFile, ignoreList);
-				    	  buildController.build(_project.getName(), _email, _password, destFile);
+				    	  buildController.build(_email, _password, _project.getName(), destFile);
 				    	  if (destFile.exists()) {
 				        	  destFile.delete();
 				          }
