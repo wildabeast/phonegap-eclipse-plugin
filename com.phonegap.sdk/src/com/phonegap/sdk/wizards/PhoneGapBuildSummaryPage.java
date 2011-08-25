@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import com.phonegap.sdk.Activator;
-import com.phonegap.sdk.PhoneGapBuildController;
+import com.phonegap.sdk.PhoneGapBuildClient;
 import com.phonegap.sdk.Util;
 
 public class PhoneGapBuildSummaryPage extends WizardPage implements Listener {
@@ -25,11 +25,11 @@ public class PhoneGapBuildSummaryPage extends WizardPage implements Listener {
 	private String _email;
 	private String _password;
 	private Button buildButton;
-	private PhoneGapBuildController buildController;
+	private PhoneGapBuildClient buildController;
 	final IProject _project;
 	final static String[] ignoreList = { ".project" };
 	
-	protected PhoneGapBuildSummaryPage(String pageName, PhoneGapBuildController buildController, IProject project) {
+	protected PhoneGapBuildSummaryPage(String pageName, PhoneGapBuildClient buildController, IProject project) {
 		super(pageName);
 		setTitle("PhoneGap Build Summary");
 		setDescription("Build completed, here's yo apps");

@@ -12,7 +12,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-import com.phonegap.sdk.PhoneGapBuildController;
+import com.phonegap.sdk.PhoneGapBuildClient;
 
 
 public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
@@ -20,10 +20,10 @@ public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
 	private Text emailField;
 	private Text passwordField;
 	private Button testConnButton;
-	private PhoneGapBuildController buildController;
+	private PhoneGapBuildClient buildController;
 	private static String emailPattern = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
 
-	protected PhoneGapBuildLoginPage(String pageName, PhoneGapBuildController buildController, String projName) {
+	protected PhoneGapBuildLoginPage(String pageName, PhoneGapBuildClient buildController, String projName) {
 		super(pageName);
 		setTitle("Build Project: " + projName);
 		setDescription("Authenticate yo' self.");

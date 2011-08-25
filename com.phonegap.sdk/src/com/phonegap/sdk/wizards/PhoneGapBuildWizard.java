@@ -4,14 +4,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.Wizard;
 
 import com.phonegap.sdk.Activator;
-import com.phonegap.sdk.PhoneGapBuildController;
+import com.phonegap.sdk.PhoneGapBuildClient;
 
 public class PhoneGapBuildWizard extends Wizard {
 
 	IProject _project = null;
 	PhoneGapBuildSummaryPage _summaryPage = null;
 	PhoneGapBuildLoginPage _loginPage = null;
-	PhoneGapBuildController buildController = null;
+	PhoneGapBuildClient buildController = null;
 	
 	
     public PhoneGapBuildWizard(IProject proj) {
@@ -22,7 +22,7 @@ public class PhoneGapBuildWizard extends Wizard {
     }
     
 	public void addPages() {
-		buildController = new PhoneGapBuildController();
+		buildController = new PhoneGapBuildClient();
 		
         _loginPage = new PhoneGapBuildLoginPage("loginPage", buildController, _project.getName());
         addPage(_loginPage);

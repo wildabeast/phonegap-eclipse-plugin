@@ -17,12 +17,12 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-public class PhoneGapBuildController {
+public class PhoneGapBuildClient {
 	
 	private String authUrl = "https://build.phonegap.com/api/v1/me";
 	private String buildUrl = "https://build.phonegap.com/api/v1/apps";
 	
-	public PhoneGapBuildController() {
+	public PhoneGapBuildClient() {
 		
 	}
 
