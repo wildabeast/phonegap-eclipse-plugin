@@ -35,9 +35,5 @@ public class PhoneGapBuildWizard extends Wizard {
 	public boolean performFinish() {
 		return true;
 	}
-	
-	public boolean canPerformFinish() {
-		return _loginPage.isPageComplete();
-	}
 
 }

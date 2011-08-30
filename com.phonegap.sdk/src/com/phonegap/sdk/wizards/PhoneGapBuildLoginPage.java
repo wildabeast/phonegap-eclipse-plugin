@@ -11,17 +11,22 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.phonegap.sdk.PhoneGapBuildClient;
 
 
 public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
 	
+	private static String TEST_CONNECTION_SUCCESS = "Yo' credentials worked";
+	private static String EMAIL_REGEX = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+	
 	private Text emailField;
 	private Text passwordField;
 	private Button testConnButton;
+	private Label testLabel;
 	private PhoneGapBuildClient buildController;
-	private static String emailPattern = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
 
 	protected PhoneGapBuildLoginPage(String pageName, PhoneGapBuildClient buildController, String projName) {
 		super(pageName);
@@ -64,6 +69,9 @@ public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
 	    testConnButton.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, true, false , 2, 1));
 	    testConnButton.setText("Test Connection");
 	    testConnButton.addListener(SWT.Selection, this);
+	    
+	    testLabel = new Label(composite, SWT.CENTER);
+	    testLabel.setLayoutData(new GridData(SWT.CENTER, SWT.TOP, true, false , 2, 1));
 
 		setControl(composite);
 		setPageComplete(false);
@@ -88,14 +96,29 @@ public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
 		
 	}
 	
+	
+	
 	private void testConnection() {
 		try {
 			final String email = emailField.getText();
 			final String password = passwordField.getText();
+			final Display disp = Display.getCurrent();
 			getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 		      public void run(IProgressMonitor monitor) {
 	    		  monitor.beginTask("Authenticating: ", IProgressMonitor.UNKNOWN);
-		    	  buildController.authenticate(email, password);
+		    	  final String authResponse = buildController.authenticate(email, password);
+		    	  disp.syncExec(new Runnable() {
+		    				    public void run(){
+		    				    	JSONObject obj=  (JSONObject) JSONValue.parse(authResponse);
+		    				    	String error = (String) obj.get("error");
+		    				    	if (error != null) {
+		    				    		setErrorMessage(error);
+		    				    	} else {
+		    				    		setMessage(TEST_CONNECTION_SUCCESS);
+		    				    	}
+		    				    }
+		    				  });
+
 		    	  monitor.done();
 		      }
 			});
@@ -110,7 +133,7 @@ public class PhoneGapBuildLoginPage extends WizardPage implements Listener {
 		Boolean isValid = false;
 		CharSequence inputStr = email;  
 		
-		Pattern pattern = Pattern.compile(emailPattern, Pattern.CASE_INSENSITIVE);  
+		Pattern pattern = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);  
 		Matcher matcher = pattern.matcher(inputStr);  
 		if(matcher.matches()){  
 			isValid = true;  
